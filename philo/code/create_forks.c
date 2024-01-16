@@ -12,9 +12,8 @@ t_fork *create_forks(int num_of_forks)
     while (++i < num_of_forks)
     {
         arr[i].id_fork = i + 1;
-        arr[i].is_held = 0;
         if (pthread_mutex_init(&(arr[i].fork), NULL) != 0)
-            return (collecting_mutexes(arr, i), free(arr), NULL);
-    }
+            return (collecting_mutexes(arr, i, 0), free(arr), NULL);
+    } 
     return (arr);
 }

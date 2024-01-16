@@ -1,6 +1,6 @@
 NAME=philo_bonus
 HEADER=philo_bonus.h
-CC=cc
+CC=gcc
 CFLAGS=
 RM= rm -f
 
@@ -10,7 +10,7 @@ ERROR=error/error_args.c
 
 PARSING=parsing/parse_input.c
 
-CODE=code/init_fork.c code/init_philos.c
+CODE=code/init_fork.c code/init_philos.c code/init_print.c
 
 UTILS=utils/get_time_ms.c
 

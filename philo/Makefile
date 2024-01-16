@@ -1,6 +1,6 @@
 NAME=philo
 HEADER=philo.h
-CC=cc
+CC=gcc
 CFLAGS=-Wall -Wextra -Werror
 RM= rm -f
 
@@ -10,7 +10,7 @@ ERROR=error/error_args.c
 
 CODE=code/create_forks.c code/create_philos.c code/check_death.c code/init_threads.c
 
-UTILS=utils/get_time_ms.c utils/collecting_mutexes.c utils/detaching_threads.c
+UTILS=utils/get_time_ms.c utils/collecting_mutexes.c utils/detaching_threads.c utils/sleeping.c
 
 SRC=philo.c $(UTILS) $(CODE) $(ERROR) parsing/parse_input.c\
 	lib/ft_atoi.c $(ROUTINE)
@@ -20,7 +20,7 @@ OBJ=$(SRC:.c=.o)
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	cc $(OBJ) -o $(NAME)
+	$(CC) $(OBJ) -g -pthread -o $(NAME)
 
 %.o: %.c $(HEADER)
 	$(CC) $(CFLAGS) -c $< -o $@

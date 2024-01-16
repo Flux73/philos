@@ -19,6 +19,8 @@ typedef struct s_data
     unsigned long time_to_sleep;
     unsigned long starting;
     unsigned long last_meal_time;
+    sem_t *print_sem;
+    sem_t *forks_sem;
     int num_of_meals;
 
     int philo_id;
@@ -34,7 +36,8 @@ int error_args(void);
 int parse_input(int argc, char **av);
 
 sem_t *init_fork(int num_of_philos);
-t_data *init_philos(char **av, sem_t *forks_sem);
+sem_t *init_print(void);
+t_data *init_philos(char **av, sem_t *forks_sem, sem_t *print_sem);
 
 
 #endif
