@@ -1,23 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   detaching_threads.c                                :+:      :+:    :+:   */
+/*   sleeping.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: smoumni <smoumni@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/26 22:35:23 by smoumni           #+#    #+#             */
-/*   Updated: 2024/01/26 22:36:45 by smoumni          ###   ########.fr       */
+/*   Created: 2024/01/27 01:07:12 by smoumni           #+#    #+#             */
+/*   Updated: 2024/01/27 13:09:32 by smoumni          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../philo.h"
+#include "../philo_bonus.h"
 
-void	detaching_threads(t_data *data, int num_of_philos)
+void	sleeping(unsigned long time_ms)
 {
-	int	i;
+	unsigned long	t;
 
-	i = -1;
-	while (++i < num_of_philos)
-		if (pthread_detach(data[i].philo->philo))
-			return ;
+	t = get_time_ms();
+	while (get_time_ms() - t - 0 < time_ms)
+	{
+	}
 }

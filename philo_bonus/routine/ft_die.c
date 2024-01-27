@@ -1,23 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   detaching_threads.c                                :+:      :+:    :+:   */
+/*   ft_die.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: smoumni <smoumni@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/01/26 22:35:23 by smoumni           #+#    #+#             */
-/*   Updated: 2024/01/26 22:36:45 by smoumni          ###   ########.fr       */
+/*   Created: 2024/01/27 01:45:49 by smoumni           #+#    #+#             */
+/*   Updated: 2024/01/27 13:12:49 by smoumni          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../philo.h"
+#include "../philo_bonus.h"
 
-void	detaching_threads(t_data *data, int num_of_philos)
+void	*ft_die(void *data)
 {
-	int	i;
+	t_data	*dt;
 
-	i = -1;
-	while (++i < num_of_philos)
-		if (pthread_detach(data[i].philo->philo))
-			return ;
+	dt = (t_data *)data;
+	while (1)
+	{
+		if (dt->num_of_meals != 0 && \
+			get_time_ms() - dt->starting - dt->last_meal_time >= \
+				dt->time_to_die)
+		{
+			sem_wait(dt->sems->print_sem);
+			printf("%lu %d died\n", get_time_ms() - dt->starting, \
+				dt->philo_id);
+			sem_post(dt->sems->death_sem);
+			exit(0);
+		}
+	}
 }

@@ -1,61 +1,64 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: smoumni <smoumni@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/01/26 22:54:14 by smoumni           #+#    #+#             */
+/*   Updated: 2024/01/27 00:41:20 by smoumni          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
-void l()
+static void	free_data(t_philo *philos, t_data *data, t_fork *forks, t_eve *eve)
 {
-    system("leaks philo");
+	if (data)
+		free(data);
+	if (philos)
+		free(philos);
+	if (forks)
+		free(forks);
+	if (eve)
+	{
+		free(eve->print_mutex);
+		free(eve);
+	}
 }
 
-static t_eve *create_eve(int num_of_philos)
+static void	handle_die(t_main *main)
 {
-    t_eve *arr;
-    int i;
-
-    arr = (t_eve *)malloc((sizeof(t_eve) * num_of_philos));
-    if (!arr)
-        return (NULL);
-    i = -1;
-    while (++i < num_of_philos)
-    {
-        pthread_mutex_init(&(arr[i].last_meal_mutex), NULL);
-        pthread_mutex_init(&(arr[i].num_of_meals_mutex), NULL);
-    } 
-    return (arr);
+	detaching_threads(main->data, main->num_of_philos);
+	check_death(main->data, main->num_of_philos);
+	collecting_mutexes(main->forks, main->num_of_philos, main->eve);
+	free_data(main->philos, main->data, main->forks, main->eve);
 }
 
-static pthread_mutex_t *create_print(void)
+int	main(int argc, char *argv[])
 {
-    pthread_mutex_t *arr;
+	t_main	main;
 
-    arr = malloc(sizeof(pthread_mutex_t));
-    if (!arr)
-        return (NULL);
-    pthread_mutex_init(arr, NULL);
-    return (arr);
-}
-
-int main(int argc, char *argv[])
-{
-    t_main main;
-
-    atexit(l);
-    if (argc != 5 && argc != 6)
-        return (error_args());
-    if (parse_input(argc, argv))
-        return (-1);
-    main.num_of_philos = ft_atoi(argv[1]);
-    if (!(main.philos = create_philos(main.num_of_philos)))
-        return (-1);
-    if (!(main.forks = create_forks(main.num_of_philos)))
-        return (free(main.philos), -1);
-    main.eve = create_eve(main.num_of_philos);
-    main.print_mutex = create_print();
-    if (!(main.data = init_threads(main.philos, main.forks, main.eve, main.print_mutex, argv + 1)))
-    {
-        collecting_mutexes(main.forks, main.num_of_philos, main.eve);
-        return (free(main.philos), free(main.forks), -1);
-    }
-    detaching_threads(main.data, main.num_of_philos);
-    check_death(main.data, main.num_of_philos);
-    collecting_mutexes(main.forks, main.num_of_philos, main.eve);
-    return (free(main.data), free(main.philos), free(main.eve), free(main.forks), free(main.print_mutex), 0);
+	if (argc != 5 && argc != 6)
+		return (error_args());
+	if (parse_input(argc, argv))
+		return (-1);
+	main.num_of_philos = ft_atoi(argv[1]);
+	main.philos = create_philos(main.num_of_philos);
+	if (!(main.philos))
+		return (-1);
+	main.forks = create_forks(main.num_of_philos);
+	if (!(main.forks))
+		return (free(main.philos), -1);
+	main.eve = create_eve(main.num_of_philos);
+	if (!(main.eve))
+		return (free(main.philos), free(main.forks), -1);
+	main.data = init_threads(main.philos, main.forks, main.eve, argv + 1);
+	if (!(main.data))
+	{
+		collecting_mutexes(main.forks, main.num_of_philos, main.eve);
+		return (free_data(main.philos, 0, main.forks, main.eve), -1);
+	}
+	handle_die(&main);
+	return (0);
 }
